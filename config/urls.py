@@ -14,13 +14,26 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings #MEDIA URL 동적 위한 Import
+from django.conf.urls.static import static #MEDIA URL 동적 위한 Import
 from django.contrib import admin
 from django.urls import path
+
 from config.views import index
-from blog.views import post_list
+from blog.views import post_list, post_detail, post_add
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", index),
-    path("posts/", post_list)
+    path("posts/", post_list),
+    path("posts/<int:post_id>/", post_detail),
+    path("posts/add/", post_add),
 ]
+
+urlpatterns += static(
+    #URL의 접두어가 MEDIA_URL로 시작할 경우
+    prefix=settings.MEDIA_URL,
+    # 돌려줄 디렉토리는 MEDIA_ROOT 기준 으로 한다
+    document_root=settings.MEDIA_ROOT,
+
+)
